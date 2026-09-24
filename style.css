@@ -845,3 +845,8 @@ button { font-family: var(--sans); cursor: pointer; }
 }
 
 .subtotal-row .var-category { font-weight: 600; color: var(--t1); }
+
+/* ─── Hide Netlify floating badge ─── */
+[id*="netlify"], [class*="netlify"], a[href*="netlify.com"] {
+  display: none !important;
+}
