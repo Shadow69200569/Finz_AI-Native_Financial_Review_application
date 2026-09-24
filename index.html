@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finz — NYC Restaurant Co. Financial Review</title>
+  <meta name="description" content="Monthly financial review for NYC Restaurant Co. — January to March 2026. View your P&L, spot unusual transactions, and ask questions about your finances." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="favicon.svg" alt="Finz Logo" class="logo-img" style="width: 28px; height: 28px; border-radius: 8px;" />
+        <span class="logo-text">Finz</span>
+      </div>
+      <span class="sidebar-subtitle">Financial Review</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" id="nav-dashboard" onclick="showSection('dashboard');return false">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+        </span>
+        Overview
+      </a>
+
+      <a href="#" class="nav-item" id="nav-transactions" onclick="showSection('transactions');return false">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </span>
+        Transactions
+      </a>
+
+      <a href="#" class="nav-item" id="nav-pl" onclick="showSection('pl');return false">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="16"/>
+          </svg>
+        </span>
+        Profit &amp; Loss
+      </a>
+
+      <a href="#" class="nav-item" id="nav-variances" onclick="showSection('variances');return false">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+            <polyline points="17 6 23 6 23 12"/>
+          </svg>
+        </span>
+        Month Changes
+      </a>
+
+      <a href="#" class="nav-item" id="nav-review" onclick="showSection('review');return false">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
+        Needs Review
+        <span class="badge" id="review-badge" style="display:none">0</span>
+      </a>
+
+      <a href="#" class="nav-item" id="nav-analyst" onclick="showSection('analyst');return false">
+        <span class="nav-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </span>
+        Ask a Question
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="company-name">NYC Restaurant Co.</div>
+      <div class="period-label">Jan – Mar 2026</div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <main class="main-content">
+
+    <!-- ═══ OVERVIEW / DASHBOARD ═══ -->
+    <section id="section-dashboard" class="section active">
+      <div class="page-header">
+        <h1>Financial Overview</h1>
+        <p class="page-subtitle">How the restaurant performed this quarter — January through March 2026</p>
+      </div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="charts-row">
+        <div class="chart-card">
+          <h3>Revenue vs Costs — by Month</h3>
+          <div class="chart-container"><canvas id="revenueChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>Where the Money Went (Q1 Total)</h3>
+          <div class="chart-container"><canvas id="categoryChart"></canvas></div>
+        </div>
+      </div>
+      <div class="insights-card">
+        <h3>Key Takeaways</h3>
+        <div id="quick-insights-list" class="insights-list"></div>
+      </div>
+    </section>
+
+    <!-- ═══ TRANSACTIONS ═══ -->
+    <section id="section-transactions" class="section">
+      <div class="page-header">
+        <h1>All Transactions</h1>
+        <p class="page-subtitle">Every bank transaction from Jan–Mar 2026, sorted and categorized. Click a row to change its category.</p>
+      </div>
+      <div class="filter-bar">
+        <select id="filter-month" onchange="filterTransactions()">
+          <option value="all">All Months</option>
+          <option value="2026-01">January 2026</option>
+          <option value="2026-02">February 2026</option>
+          <option value="2026-03">March 2026</option>
+        </select>
+        <select id="filter-category" onchange="filterTransactions()">
+          <option value="all">All Categories</option>
+        </select>
+        <select id="filter-flag" onchange="filterTransactions()">
+          <option value="all">Show All</option>
+          <option value="flagged">Flagged Only</option>
+          <option value="uncertain">Uncertain Only</option>
+        </select>
+        <input type="text" id="filter-search" placeholder="Search by name, vendor, or transaction ID…" oninput="filterTransactions()" />
+        <span id="txn-count-label" class="count-label">181 transactions</span>
+      </div>
+      <div class="table-wrapper">
+        <table class="txn-table" id="txn-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Vendor / Source</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Category</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="txn-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ P&L ═══ -->
+    <section id="section-pl" class="section">
+      <div class="page-header">
+        <h1>Profit &amp; Loss Statement</h1>
+        <p class="page-subtitle">All numbers are calculated directly from your bank transactions — nothing is estimated. Click any line to see the transactions behind it.</p>
+      </div>
+      <div class="pl-month-tabs">
+        <button class="pl-tab active" id="pl-tab-jan" onclick="showPLMonth('2026-01')">January</button>
+        <button class="pl-tab" id="pl-tab-feb" onclick="showPLMonth('2026-02')">February</button>
+        <button class="pl-tab" id="pl-tab-mar" onclick="showPLMonth('2026-03')">March</button>
+        <button class="pl-tab" id="pl-tab-q1"  onclick="showPLMonth('Q1')">Full Quarter</button>
+      </div>
+      <div id="pl-content" class="pl-content"></div>
+    </section>
+
+    <!-- ═══ VARIANCES ═══ -->
+    <section id="section-variances" class="section">
+      <div class="page-header">
+        <h1>What Changed Between Months?</h1>
+        <p class="page-subtitle">See what went up or down and by how much. Click any row to see the actual transactions driving the change.</p>
+      </div>
+      <div class="variance-compare-bar">
+        <span>Comparing</span>
+        <select id="var-from" onchange="renderVariances()">
+          <option value="2026-01">January 2026</option>
+          <option value="2026-02">February 2026</option>
+        </select>
+        <span>to</span>
+        <select id="var-to" onchange="renderVariances()">
+          <option value="2026-02">February 2026</option>
+          <option value="2026-03" selected>March 2026</option>
+        </select>
+      </div>
+      <div id="variance-content"></div>
+    </section>
+
+    <!-- ═══ REVIEW ITEMS ═══ -->
+    <section id="section-review" class="section">
+      <div class="page-header">
+        <h1>Transactions That Need Your Attention</h1>
+        <p class="page-subtitle">These transactions were flagged because their category is unclear, the amount is unusual, or they may need special accounting treatment.</p>
+      </div>
+      <div id="review-content"></div>
+    </section>
+
+    <!-- ═══ AI ANALYST ═══ -->
+    <section id="section-analyst" class="section">
+      <div class="page-header">
+        <h1>Ask a Question</h1>
+        <p class="page-subtitle">Ask anything about your financials in plain English — the answers come directly from your transaction data.</p>
+      </div>
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg assistant">
+            <div class="msg-avatar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <div class="msg-bubble">
+              <p>Hi! I'm your financial assistant for NYC Restaurant Co. I've read through all 181 transactions from January to March 2026.</p>
+              <p>You can ask me things like:</p>
+              <ul>
+                <li>What was our revenue in March?</li>
+                <li>How much did we spend on payroll each month?</li>
+                <li>Why did our profit change between February and March?</li>
+                <li>What are our biggest expenses?</li>
+                <li>Which transactions need my attention?</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-questions">
+          <span class="qq-label">Try asking:</span>
+          <button class="qq-btn" onclick="askQuestion('What was our total revenue in March 2026?')">March revenue?</button>
+          <button class="qq-btn" onclick="askQuestion('How much did we spend on payroll each month?')">Payroll by month?</button>
+          <button class="qq-btn" onclick="askQuestion('Why did operating profit change between February and March?')">Why did profit change?</button>
+          <button class="qq-btn" onclick="askQuestion('What drove the increase in food costs?')">Food costs?</button>
+          <button class="qq-btn" onclick="askQuestion('Which transactions need my attention?')">What needs review?</button>
+          <button class="qq-btn" onclick="askQuestion('What changed most significantly over the review period?')">Biggest changes?</button>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Type your question here…" onkeydown="if(event.key==='Enter') sendChat()" />
+          <button class="send-btn" onclick="sendChat()" id="send-btn">Send</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Edit Category Modal ── -->
+  <div class="modal-overlay" id="edit-modal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Change Transaction Category</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveCategory()">Save Change</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Drill-down Modal ── -->
+  <div class="modal-overlay" id="drill-modal" style="display:none">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h3 id="drill-modal-title">Transactions</h3>
+        <button class="modal-close" onclick="closeDrillModal()">✕</button>
+      </div>
+      <div class="modal-body" id="drill-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
