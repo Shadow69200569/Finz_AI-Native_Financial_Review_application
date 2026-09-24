@@ -3,6 +3,9 @@
 
 > Assignment — FINZ Software Engineering Internship
 
+🌐 **Live Application**: [https://finz-ai.netlify.app](https://finz-ai.netlify.app/)  
+📁 **GitHub Repository**: [https://github.com/Shadow69200569/Finz_AI-Native_Financial_Review_application](https://github.com/Shadow69200569/Finz_AI-Native_Financial_Review_application.git)
+
 ---
 
 ## What This Is
