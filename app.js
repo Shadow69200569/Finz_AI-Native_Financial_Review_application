@@ -1620,25 +1620,29 @@ function submitNewTransaction(event) {
     "Method": method
   };
 
-  // Add to RAW_TRANSACTIONS
   RAW_TRANSACTIONS.push(newTxnRaw);
 
-  // Categorize
-  const processed = categorizeTransaction(newTxnRaw);
-  categorizedTxns.push(processed);
+  const catInfo = categorizeTransaction(desc);
+  const enriched = {
+    id: newId,
+    date: date,
+    description: desc,
+    counterparty: vendor,
+    amount: amount,
+    method: method,
+    month: date.substring(0, 7),
+    ...catInfo
+  };
+
+  transactions.push(enriched);
 
   // Refresh app state
-  renderDashboard();
-  renderTransactions();
-  renderPL();
-  renderVariances();
-  renderReviewItems();
+  renderAll();
 
   closeAddTxnModal();
   document.getElementById('add-txn-form').reset();
 
-  // Show confirmation alert/toast
-  alert(`Transaction ${newId} added successfully! Categorized as "${processed.category}". Financial metrics updated.`);
+  alert(`Transaction ${newId} added successfully! Categorized as "${enriched.category}". Financial metrics updated.`);
 }
 
 // === EXCEL / CSV BATCH IMPORT ===
@@ -1667,8 +1671,7 @@ function handleExcelUpload(event) {
 
       let importedCount = 0;
       jsonRows.forEach((row, index) => {
-        // Map common column name variations
-        const date = row['Date'] || row['date'] || row['Transaction Date'] || new Date().toISOString().split('T')[0];
+        const dateRaw = row['Date'] || row['date'] || row['Transaction Date'] || new Date().toISOString().split('T')[0];
         const desc = row['Description'] || row['description'] || row['Memo'] || row['Details'] || 'Batch imported expense';
         const vendor = row['Counterparty'] || row['Vendor'] || row['Payee'] || row['counterparty'] || 'Various';
         const rawAmount = row['Amount'] || row['amount'] || row['Total'] || 0;
@@ -1676,10 +1679,12 @@ function handleExcelUpload(event) {
         const method = row['Method'] || row['Payment Method'] || row['method'] || 'ACH';
         const txnId = row['Transaction ID'] || row['ID'] || ('T' + (2000 + RAW_TRANSACTIONS.length + index));
 
+        const dateStr = String(dateRaw).substring(0, 10);
+
         if (!isNaN(amount) && amount !== 0) {
           const newTxnRaw = {
             "Transaction ID": String(txnId),
-            "Date": String(date).substring(0, 10),
+            "Date": dateStr,
             "Description": String(desc),
             "Counterparty": String(vendor),
             "Amount": amount,
@@ -1687,18 +1692,26 @@ function handleExcelUpload(event) {
           };
 
           RAW_TRANSACTIONS.push(newTxnRaw);
-          const processed = categorizeTransaction(newTxnRaw);
-          categorizedTxns.push(processed);
+
+          const catInfo = categorizeTransaction(String(desc));
+          const enriched = {
+            id: String(txnId),
+            date: dateStr,
+            description: String(desc),
+            counterparty: String(vendor),
+            amount: amount,
+            method: String(method),
+            month: dateStr.substring(0, 7),
+            ...catInfo
+          };
+
+          transactions.push(enriched);
           importedCount++;
         }
       });
 
-      // Refresh app state
-      renderDashboard();
-      renderTransactions();
-      renderPL();
-      renderVariances();
-      renderReviewItems();
+      // Refresh all UI rendering
+      renderAll();
 
       alert(`Success! Successfully imported ${importedCount} transactions from ${file.name}. All metrics updated!`);
       event.target.value = ''; // Reset file input
