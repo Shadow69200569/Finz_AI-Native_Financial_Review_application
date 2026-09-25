@@ -142,6 +142,9 @@
         </select>
         <input type="text" id="filter-search" placeholder="Search by name, vendor, or transaction ID…" oninput="filterTransactions()" />
         <span id="txn-count-label" class="count-label">181 transactions</span>
+        <button class="btn-primary" onclick="openAddTxnModal()" style="padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
+          <span>+</span> Add Transaction
+        </button>
       </div>
       <div class="table-wrapper">
         <table class="txn-table" id="txn-table">
@@ -276,7 +279,47 @@
         <h3 id="drill-modal-title">Transactions</h3>
         <button class="modal-close" onclick="closeDrillModal()">✕</button>
       </div>
-      <div class="modal-body" id="drill-modal-body"></div>
+  <!-- ── Add Transaction Modal ── -->
+  <div class="modal-overlay" id="add-txn-modal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add New Transaction</h3>
+        <button class="modal-close" onclick="closeAddTxnModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="add-txn-form" onsubmit="submitNewTransaction(event)">
+          <div style="margin-bottom: 12px;">
+            <label style="display:block; font-size: 11px; font-weight: 600; color: var(--t3); margin-bottom: 4px; text-transform: uppercase;">Date</label>
+            <input type="date" id="new-txn-date" required style="width:100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 13px;" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display:block; font-size: 11px; font-weight: 600; color: var(--t3); margin-bottom: 4px; text-transform: uppercase;">Description</label>
+            <input type="text" id="new-txn-desc" placeholder="e.g. Sysco Food Inventory Purchase" required style="width:100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 13px;" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display:block; font-size: 11px; font-weight: 600; color: var(--t3); margin-bottom: 4px; text-transform: uppercase;">Vendor / Counterparty</label>
+            <input type="text" id="new-txn-vendor" placeholder="e.g. Sysco" required style="width:100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 13px;" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display:block; font-size: 11px; font-weight: 600; color: var(--t3); margin-bottom: 4px; text-transform: uppercase;">Amount ($)</label>
+            <input type="number" step="0.01" id="new-txn-amount" placeholder="Negative for expense (-500.00), Positive for revenue (1200.00)" required style="width:100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 13px;" />
+          </div>
+          <div style="margin-bottom: 16px;">
+            <label style="display:block; font-size: 11px; font-weight: 600; color: var(--t3); margin-bottom: 4px; text-transform: uppercase;">Payment Method</label>
+            <select id="new-txn-method" style="width:100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 13px;">
+              <option value="ACH">ACH</option>
+              <option value="ACH/card">ACH/card</option>
+              <option value="Card">Card</option>
+              <option value="Check">Check</option>
+              <option value="Transfer">Transfer</option>
+            </select>
+          </div>
+          <div class="modal-footer" style="padding-right: 0; padding-bottom: 0;">
+            <button type="button" class="btn-secondary" onclick="closeAddTxnModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Add Transaction</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 

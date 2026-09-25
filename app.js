@@ -1574,3 +1574,69 @@ document.getElementById('edit-modal').addEventListener('click', function(e) {
 document.getElementById('drill-modal').addEventListener('click', function(e) {
   if (e.target === this) closeDrillModal();
 });
+const addTxnModalEl = document.getElementById('add-txn-modal');
+if (addTxnModalEl) {
+  addTxnModalEl.addEventListener('click', function(e) {
+    if (e.target === this) closeAddTxnModal();
+  });
+}
+
+// === DYNAMIC TRANSACTION INSERTION ===
+function openAddTxnModal() {
+  const modal = document.getElementById('add-txn-modal');
+  if (modal) {
+    document.getElementById('new-txn-date').valueAsDate = new Date();
+    modal.style.display = 'flex';
+  }
+}
+
+function closeAddTxnModal() {
+  const modal = document.getElementById('add-txn-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function submitNewTransaction(event) {
+  event.preventDefault();
+  const date = document.getElementById('new-txn-date').value;
+  const desc = document.getElementById('new-txn-desc').value.trim();
+  const vendor = document.getElementById('new-txn-vendor').value.trim();
+  const amount = parseFloat(document.getElementById('new-txn-amount').value);
+  const method = document.getElementById('new-txn-method').value;
+
+  if (!date || !desc || isNaN(amount)) {
+    alert('Please fill out all required fields.');
+    return;
+  }
+
+  // Generate unique ID
+  const newId = 'T' + (1000 + RAW_TRANSACTIONS.length + Math.floor(Math.random() * 100));
+
+  const newTxnRaw = {
+    "Transaction ID": newId,
+    "Date": date,
+    "Description": desc,
+    "Counterparty": vendor,
+    "Amount": amount,
+    "Method": method
+  };
+
+  // Add to RAW_TRANSACTIONS
+  RAW_TRANSACTIONS.push(newTxnRaw);
+
+  // Categorize
+  const processed = categorizeTransaction(newTxnRaw);
+  categorizedTxns.push(processed);
+
+  // Refresh app state
+  renderDashboard();
+  renderTransactions();
+  renderPL();
+  renderVariances();
+  renderReviewItems();
+
+  closeAddTxnModal();
+  document.getElementById('add-txn-form').reset();
+
+  // Show confirmation alert/toast
+  alert(`Transaction ${newId} added successfully! Categorized as "${processed.category}". Financial metrics updated.`);
+}
