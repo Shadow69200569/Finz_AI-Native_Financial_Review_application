@@ -1,4 +1,4 @@
-// ===== Finz AI-Native Financial Review Application =====
+// ===== Ledger AI — AI-Native Financial Review Application =====
 // NYC Restaurant Co. | Jan–Mar 2026
 // Core workflow: ingest → categorize → review → calculate → explain → investigate
 

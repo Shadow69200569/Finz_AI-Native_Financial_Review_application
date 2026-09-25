@@ -1,4 +1,4 @@
-# Finz — AI-Native Financial Review
+# Ledger AI — AI-Native Financial Review
 **NYC Restaurant Co. | Q1 2026 (Jan–Mar)**
 
 > Assignment — FINZ Software Engineering Internship
