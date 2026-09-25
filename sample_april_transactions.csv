@@ -1,0 +1,18 @@
+Transaction ID,Date,Description,Counterparty,Amount,Method
+T1182,2026-04-01,Rent payment - April,Landlord,-9000.00,ACH
+T1183,2026-04-02,Food inventory purchase - Sysco,Sysco,-4250.00,ACH/card
+T1184,2026-04-03,POS & software subscription,Toast POS,-875.00,Card
+T1185,2026-04-05,Insurance premium,Next Insurance,-1250.00,ACH
+T1186,2026-04-06,Food inventory purchase - US Foods,US Foods,-3890.50,ACH/card
+T1187,2026-04-08,Bar & beverage inventory,Breakthru Beverage,-2150.00,ACH
+T1188,2026-04-10,Weekly hourly payroll,Gusto Payroll,-12450.00,ACH
+T1189,2026-04-12,Electric & gas utility bill,ConEd,-1680.00,ACH
+T1190,2026-04-15,New kitchen ice machine,Restaurant Depot,-3450.00,Card
+T1191,2026-04-16,Food inventory purchase - Sysco,Sysco,-4820.00,ACH/card
+T1192,2026-04-18,Delivery platform sales - DoorDash,DoorDash,8450.00,Transfer
+T1193,2026-04-20,High volume weekend dining sales,Square POS,18920.00,Transfer
+T1194,2026-04-22,Social media marketing campaign,Meta Ads,-650.00,Card
+T1195,2026-04-24,Weekly hourly payroll,Gusto Payroll,-12800.00,ACH
+T1196,2026-04-26,Private corporate catering event,Acme Corp,5200.00,Check
+T1197,2026-04-28,Professional accounting retainer,KPMG,-1500.00,ACH
+T1198,2026-04-30,Monthly management salary,Management Payroll,-8500.00,ACH
