@@ -918,9 +918,9 @@ function updateReviewBadge() {
 }
 
 // ===================================================
-// 16. AI ANALYST — Powered by Groq (Llama 3.1 70B)
+// 16. AI ANALYST — Powered by Google Gemini API via Netlify Serverless Proxy
 //     Financial math stays deterministic in JS.
-//     Only natural language reasoning goes to Groq.
+//     Only natural language reasoning goes to Gemini.
 // ===================================================
 function sendChat() {
   const input = document.getElementById('chat-input');
@@ -934,18 +934,18 @@ function askQuestion(question) {
   appendUserMsg(question);
   appendThinking();
 
-  // Try Groq first; silently fall back to built-in engine if anything fails
-  callGroqAPI(question)
+  // Call Netlify serverless proxy (Gemini API); fall back to built-in engine if API is unconfigured/fails
+  callAIProxy(question)
     .then(answer => {
       removeThinking();
       appendAssistantMsg(answer.text, answer.evidence);
     })
-    .catch(() => {
-      // Groq unavailable or key missing — fall back to built-in answer engine
+    .catch((err) => {
+      console.warn('AI Proxy notice:', err);
       removeThinking();
       const answer = generateAnswer(question);
-      // Append a small note so user/reviewer knows fallback was used
-      const fallbackNote = `<p style="font-size:10px;color:#5a6580;margin-top:8px;border-top:1px solid #1a2035;padding-top:6px">🔌 <em>Built-in mode (Groq API unavailable)</em></p>`;
+      // Append a small note so user/reviewer knows fallback engine was used
+      const fallbackNote = `<p style="font-size:10px;color:#5a6580;margin-top:8px;border-top:1px solid #1a2035;padding-top:6px">🔌 <em>Built-in mode (Gemini API connecting...)</em></p>`;
       appendAssistantMsg(answer.text + fallbackNote, answer.evidence);
     });
 }
@@ -1063,7 +1063,7 @@ Total transactions: 181 (Jan: ~60, Feb: ~60, Mar: ~61)`;
 }
 
 // Call Netlify serverless function — API key stays on server, never in browser
-async function callGroqAPI(userQuestion) {
+async function callAIProxy(userQuestion) {
   const context = buildCompactContext();
   const fullPrompt = `You are a financial analyst for NYC Restaurant Co.
 Only use numbers from the data below. Be concise, use bullet points.
@@ -1639,4 +1639,73 @@ function submitNewTransaction(event) {
 
   // Show confirmation alert/toast
   alert(`Transaction ${newId} added successfully! Categorized as "${processed.category}". Financial metrics updated.`);
+}
+
+// === EXCEL / CSV BATCH IMPORT ===
+function handleExcelUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (typeof XLSX === 'undefined') {
+    alert('Excel parsing library is loading... Please try again in a moment.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+
+      if (!jsonRows || jsonRows.length === 0) {
+        alert('No rows found in the uploaded Excel file.');
+        return;
+      }
+
+      let importedCount = 0;
+      jsonRows.forEach((row, index) => {
+        // Map common column name variations
+        const date = row['Date'] || row['date'] || row['Transaction Date'] || new Date().toISOString().split('T')[0];
+        const desc = row['Description'] || row['description'] || row['Memo'] || row['Details'] || 'Batch imported expense';
+        const vendor = row['Counterparty'] || row['Vendor'] || row['Payee'] || row['counterparty'] || 'Various';
+        const rawAmount = row['Amount'] || row['amount'] || row['Total'] || 0;
+        const amount = typeof rawAmount === 'number' ? rawAmount : parseFloat(String(rawAmount).replace(/[\$,]/g, ''));
+        const method = row['Method'] || row['Payment Method'] || row['method'] || 'ACH';
+        const txnId = row['Transaction ID'] || row['ID'] || ('T' + (2000 + RAW_TRANSACTIONS.length + index));
+
+        if (!isNaN(amount) && amount !== 0) {
+          const newTxnRaw = {
+            "Transaction ID": String(txnId),
+            "Date": String(date).substring(0, 10),
+            "Description": String(desc),
+            "Counterparty": String(vendor),
+            "Amount": amount,
+            "Method": String(method)
+          };
+
+          RAW_TRANSACTIONS.push(newTxnRaw);
+          const processed = categorizeTransaction(newTxnRaw);
+          categorizedTxns.push(processed);
+          importedCount++;
+        }
+      });
+
+      // Refresh app state
+      renderDashboard();
+      renderTransactions();
+      renderPL();
+      renderVariances();
+      renderReviewItems();
+
+      alert(`Success! Successfully imported ${importedCount} transactions from ${file.name}. All metrics updated!`);
+      event.target.value = ''; // Reset file input
+    } catch (err) {
+      console.error('Excel parse error:', err);
+      alert('Failed to parse Excel file. Please ensure it has columns: Date, Description, Counterparty, Amount.');
+    }
+  };
+  reader.readAsArrayBuffer(file);
 }

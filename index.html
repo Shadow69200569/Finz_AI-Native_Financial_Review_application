@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -142,6 +143,10 @@
         </select>
         <input type="text" id="filter-search" placeholder="Search by name, vendor, or transaction ID…" oninput="filterTransactions()" />
         <span id="txn-count-label" class="count-label">181 transactions</span>
+        <button class="btn-secondary" onclick="document.getElementById('excel-file-input').click()" style="padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
+          <span>📁</span> Import Excel
+        </button>
+        <input type="file" id="excel-file-input" accept=".xlsx,.xls,.csv" onchange="handleExcelUpload(event)" style="display:none" />
         <button class="btn-primary" onclick="openAddTxnModal()" style="padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
           <span>+</span> Add Transaction
         </button>
